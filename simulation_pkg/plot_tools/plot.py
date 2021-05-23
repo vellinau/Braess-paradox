@@ -10,13 +10,14 @@ def iterated_results(df, xlabel, filename=""):
     '''
     Plot sim results based on parameter changing during iterations.
     '''
-    from config import static_plotdir
+    from config import static_plotdir, BUS_PENALTY_V2
 
     fig = plt.figure(figsize=(20, 10))
     plt.subplot(1, 2, 1)
     plt.plot(df["parameter_values"], df["mean_costs"])
+    plt.plot(df["parameter_values"], [65]*len(df["parameter_values"]), "--")
+    plt.plot(df["parameter_values"], [85]*len(df["parameter_values"]), "--")
     plt.ylabel("Łączny koszt drogi", fontsize=14), plt.xlabel(xlabel, fontsize=14)
-    plt.ylim(60, 90)
     plt.subplot(1, 2, 2)
     if filename == "t_connector":
         for path in df["decision_count"].keys():
@@ -32,6 +33,12 @@ def iterated_results(df, xlabel, filename=""):
         plt.ylabel("Liczba pasażerów", fontsize=14), plt.xlabel(xlabel, fontsize=14)
         plt.ylim(-100, 4100)
         plt.legend()
+    elif filename == f"t_buslane - {BUS_PENALTY_V2}":
+        for path in df["decision_count"].keys():
+            plt.plot(df["parameter_values"], df["decision_count"][path], label=path)
+        plt.plot(df["parameter_values"], df["bus_count"]["Buspas"], label="Buspas")
+        plt.ylabel("Liczba kierowców na drodze", fontsize=14), plt.xlabel(xlabel, fontsize=14)
+        plt.legend(fontsize=12)
     if filename != "":
         plt.savefig(os.path.join(static_plotdir, filename))
     plt.close()

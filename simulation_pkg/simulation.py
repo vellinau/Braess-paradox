@@ -68,10 +68,10 @@ def run(iterations=1, add_max=0, parameter_position=3):
     # Create an environment and start the setup process
     env = simpy.Environment()
     parameters = [env, T_ROAD_CONST, COEF_ROAD_VAR, T_CONNECTOR, T_INTER,
-                  T_BUSLANE, BUS_PENALTY_C1, BUS_PENALTY_V2, NUM_CARS, NUM_INIT_CARS]
+                  T_BUSLANE, BUS_PENALTY_C1, BUS_PENALTY_V2, NUM_CARS, NUM_INIT_CARS, None]
     for index in range(iterations):
         raw_data = Results(NUM_CARS)
-        parameters.append(raw_data)
+        parameters[-1] = raw_data
         env.process(setup(*tuple(parameters)))
         env.run()
         assert raw_data.costs == [mean(raw_data.costs)] * NUM_CARS
