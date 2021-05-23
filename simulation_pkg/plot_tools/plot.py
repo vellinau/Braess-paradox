@@ -12,11 +12,12 @@ def iterated_results(df, xlabel, filename=""):
     '''
     from config import static_plotdir, BUS_PENALTY_V2
 
-    fig = plt.figure(figsize=(20, 10))
+    fig = plt.figure(figsize=(17, 9))
     plt.subplot(1, 2, 1)
     plt.plot(df["parameter_values"], df["mean_costs"])
-    plt.plot(df["parameter_values"], [65]*len(df["parameter_values"]), "--")
-    plt.plot(df["parameter_values"], [85]*len(df["parameter_values"]), "--")
+    if filename == f"t_buslane - {BUS_PENALTY_V2}":
+        plt.plot(df["parameter_values"], [65]*len(df["parameter_values"]), "--")
+        plt.plot(df["parameter_values"], [85]*len(df["parameter_values"]), "--")
     plt.ylabel("Łączny koszt drogi", fontsize=14), plt.xlabel(xlabel, fontsize=14)
     plt.subplot(1, 2, 2)
     if filename == "t_connector":
@@ -25,14 +26,14 @@ def iterated_results(df, xlabel, filename=""):
         plt.ylabel("Liczba kierowców na drodze", fontsize=14), plt.xlabel(xlabel, fontsize=14)
         plt.legend(fontsize=12)
     elif filename == "bus_penalty_v2":
-        plt.plot(df["parameter_values"], data["bus_count"]["CD - bus"][index], "bo", label="Bus CD")
+        plt.plot(df["parameter_values"], df["bus_count"]["CD - bus"], "co", label="Bus CD")
         plt.ylabel("Liczba pasażerów", fontsize=14), plt.xlabel(xlabel, fontsize=14)
-        plt.legend()
+        plt.legend(fontsize=16)
     elif filename == "bus_penalty_c1":
-        plt.plot(df["parameter_values"], data["bus_count"]["AC - bus"][index], "ro", label="Bus AC")
+        plt.plot(df["parameter_values"], df["bus_count"]["AC - bus"], "mo", label="Bus AC")
         plt.ylabel("Liczba pasażerów", fontsize=14), plt.xlabel(xlabel, fontsize=14)
         plt.ylim(-100, 4100)
-        plt.legend()
+        plt.legend(fontsize=16)
     elif filename == f"t_buslane - {BUS_PENALTY_V2}":
         for path in df["decision_count"].keys():
             plt.plot(df["parameter_values"], df["decision_count"][path], label=path)
