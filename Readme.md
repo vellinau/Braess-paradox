@@ -12,6 +12,7 @@ Different types of graph can be 'unlocked' via config.py. For 'classic' cases, s
  1. **Connector as a teleport** -- set T_CONNECTOR = 0.
  2. **With a 'penalty' for using the connector** -- set T_CONNECTOR > 0.
  3. **With bus penalty (no one chooses it)** -- set both BUS_PENALTY's > 0.
+ 
  3.5. **With bus premium** -- set at least one BUS_PENALTY < 0.
  4. **With bus-lanes** -- set T_BUSLANE != -1 (and > 0).
  5. **With cars not entering all at once** -- not working correctly:
