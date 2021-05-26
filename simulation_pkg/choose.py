@@ -7,16 +7,15 @@ def choose(hw, decision_point, type=None):
         # At the first junction, GPS predicts traffic for the next one. No future cars
         costs[("VC", hw.lane_v1)] = [hw.coef_road_var * (hw.lane_v1.count + 1), [hw.t_road_const]]
         costs[("bus", hw.lane_c1)] = [hw.t_road_const + hw.bus_penalty_c1, []]
+        increment = 0.5
         if hw.t_buslane == -1:
             # Graf3: no buslane, lower road with car or bus penalty
-            increment = 0.5
             costs[("CC", hw.lane_c1)] = [hw.t_road_const, []]
             costs_v2 = [hw.coef_road_var * (hw.predicted_v2_count + 0.5),
                         hw.coef_road_var * (hw.predicted_v2_count + 0.5) + hw.bus_penalty_v2]
             costs[("CC", hw.lane_c1)][1].extend(costs_v2)
         else:
             # Graf4: buslane, lower road with bus penalty only
-            increment = 1
             costs[("buslane", hw.buslane)] = [hw.t_buslane, [0]]
             costs_v2 = [hw.coef_road_var * (hw.predicted_v2_count + 1) + hw.bus_penalty_v2]
         costs[("bus", hw.lane_c1)][1].extend(costs_v2)
@@ -30,11 +29,12 @@ def choose(hw, decision_point, type=None):
             else:
                 predicted_connector[key] = False
         type, lane = min(min_cost, key=min_cost.get)
-        hw.predicted_v2_count += predicted_connector[type, lane] * increment
         bus = (type == "bus")
         connector = predicted_connector[type, lane]
-        if type == "bus":
-            type, bus = "CC", True
+        if bus:
+            type = "CC"
+        hw.predicted_v2_count += (connector + (type == "CC")) * increment
+        hw.predicted_v2_count -= (type == "buslane") * increment
         return type, lane, bus, connector
 
     if decision_point == 1:
